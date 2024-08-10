@@ -168,7 +168,7 @@ headerObserver.observe(header);
 const allSections = document.querySelectorAll('section')
 const revealSection = function (entries, observe) {
   const [entry] = entries
-  console.log(entry)
+  // console.log(entry)
   if (!entry.isIntersecting) return;
   entry.target.classList.remove('section--hidden')
   observe.unobserve(entry.target)
@@ -181,6 +181,29 @@ allSections.forEach(section => {
   sectionObserver.observe(section)
   section.classList.add('section--hidden')
 })
+
+// Lazy Loading Images
+const imgTarget = document.querySelectorAll('img[data-src]')
+
+const loadImg = function (entries, observer) {
+  const [entery] = entries;
+  // console.log(entery)
+  if (!entery.isIntersecting) return;
+  entery.target.src = entery.target.dataset.src;
+  entery.target.addEventListener('load', function () {
+    entery.target.classList.remove('lazy-img')
+  })
+  observer.unobserve(entery.target)
+}
+const imgObserver = new IntersectionObserver(loadImg, {
+  root: null,
+  threshold: 0,
+  rootMargin: '200px'
+})
+
+
+imgTarget.forEach(img => imgObserver.observe(img))
+
 // const header = document.querySelector('.header');
 // const navHeight = nav.getBoundingClientRect().height;
 
