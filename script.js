@@ -163,7 +163,24 @@ const obsOption = {
 
 const headerObserver = new IntersectionObserver(obsCallback, obsOption);
 headerObserver.observe(header);
+// section--hidden
+// Revel Section
+const allSections = document.querySelectorAll('section')
+const revealSection = function (entries, observe) {
+  const [entry] = entries
+  console.log(entry)
+  if (!entry.isIntersecting) return;
+  entry.target.classList.remove('section--hidden')
 
+}
+const sectionObserver = new IntersectionObserver(revealSection, {
+  root: null,
+  threshold: 0.15,
+})
+allSections.forEach(section => {
+  sectionObserver.observe(section)
+  section.classList.add('section--hidden')
+})
 // const header = document.querySelector('.header');
 // const navHeight = nav.getBoundingClientRect().height;
 
