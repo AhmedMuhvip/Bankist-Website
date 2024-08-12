@@ -9,6 +9,7 @@ const overlay = document.querySelector(".overlay");
 const btnCloseModal = document.querySelector(".btn--close-modal");
 const btnsOpenModal = document.querySelectorAll(".btn--show-modal");
 const nav = document.querySelector(".nav");
+const dotContainer = document.querySelector(".dots");
 
 const openModal = function (e) {
   e.preventDefault();
@@ -223,6 +224,28 @@ const goToSlide = function (slide = 0) {
 let currSlide = 0;
 goToSlide();
 
+const createDots = function () {
+  slides.forEach(function (_, i) {
+    dotContainer.insertAdjacentHTML(
+      "beforeend",
+      `<button class="dots__dot" data-slide="${i}"></>`
+    );
+  });
+};
+
+createDots();
+
+const activeDots = function (slide) {
+  document
+    .querySelectorAll(".dots__dot")
+    .forEach((dot) => dot.classList.remove("dots__dot--active"));
+  document
+    .querySelector(`.dots__dot[data-slide="${slide}"]`)
+    .classList.add("dots__dot--active");
+};
+
+activeDots(0)
+
 const nextSlide = function () {
   /* 
   currSlide++;
@@ -233,17 +256,60 @@ const nextSlide = function () {
   } else currSlide++;
 
   goToSlide(currSlide);
+  activeDots(currSlide)
 };
 
 const prevSlide = function () {
   if (currSlide === 0) {
-    currSlide = maxSlide - 1
+    currSlide = maxSlide - 1;
   } else currSlide--;
 
-  goToSlide(currSlide)
-}
+  goToSlide(currSlide);
+  activeDots(currSlide)
+};
 btnRight.addEventListener("click", nextSlide);
 btnLeft.addEventListener("click", prevSlide);
+
+// Add Keys
+document.addEventListener("keydown", function (e) {
+  if (e.key === "ArrowRight") nextSlide();
+  e.key === "ArrowLeft" && prevSlide();
+});
+
+dotContainer.addEventListener("click", function (e) {
+  if (e.target.classList.contains("dots__dot")) {
+    const slide = e.target.dataset.slide;
+    goToSlide(slide);
+    activeDots(slide)
+  }
+});
+
+// Try make image slider not working utill intrescting is true
+/* const sliderobsv = function (entries, observe) {
+  const [entery] = entries
+  console.log(entery);
+  if (!entery.isIntersecting) return;
+  if (entery.target.id === 'section--3' && entery.isIntersecting === true) {
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowRight') nextSlide();
+      e.key === 'ArrowLeft' && prevSlide();
+    })
+  }
+  observe.unobserve(entery.target);
+
+
+}
+const sliderObserve = new IntersectionObserver(sliderobsv, {
+  root: null,
+  threshold: 0.1,
+})
+allSections.forEach(el => sliderObserve.observe(el))
+ */
+
+// document.addEventListener('keydown', function (e) {
+//   if (e.key === 'ArrowRight') nextSlide();
+//   e.key === 'ArrowLeft' && prevSlide();
+// })
 // const header = document.querySelector('.header');
 // const navHeight = nav.getBoundingClientRect().height;
 
